@@ -3,10 +3,18 @@ const whitelist = require("./brain/whitelist.json");
 const Discord = require("discord.js");
 const fetch = require('node-fetch');
 const fs = require('fs');
+const buffer = require('buffer');
+var r = require('request');
 
-console.log("\x1b[31m              ____________            __             __\n   ________  / / __/ ____/___  ____  / /__________  / /\n  / ___/ _ \\/ / /_/ /   / __ \\/ __ \\/ __/ ___/ __ \\/ / \n (__  )  __/ / __/ /___/ /_/ / / / / /_/ /  / /_/ / /  \n/____/\\___/_/_/  \\____/\\____/_/ /_/\\__/_/   \\____/_/\n\n")
+console.log("\x1b[31m              ____________            __             __\n   ________  / / __/ ____/___  ____  / /__________  / /\n  / ___/ _ \\/ / /_/ /   / __ \\/ __ \\/ __/ ___/ __ \\/ / \n (__  )  __/ / __/ /___/ /_/ / / / / /_/ /  / /_/ / /  \n/____/\\___/_/_/  \\____/\\____/_/ /_/\\__/_/   \\____/_/\nCreated by: \x1b[37mciph0n\n\x1b[31mGithub: \x1b[37mhttps://github.com/ciph0n\n\x1b[31mTwitter: \x1b[37mhttps://twitter.com/ciph0n_\n")
 
-const cmdLog = new console.Console(fs.createWriteStream('./logs/cmdLog.log', {
+fs.writeFileSync('./brain/live.txt', new Date().toUTCString().toString(), {
+  flag: 'w'
+}, function (err) {
+  console.log(err);
+});
+
+const commandLog = new console.Console(fs.createWriteStream('./logs/commandLog.log', {
   flags: 'a'
 }));
 
@@ -16,7 +24,12 @@ const client = new Discord.Client({
 });
 
 client.on("ready", async () => {
-  console.log(`\x1b[31m${client.user.username} \x1b[32mhas just connected to \x1b[31mDiscord's API\x1b[32m!`);
+  console.log(`\x1b[31m${client.user.username} \x1b[37mhas just connected to \x1b[31mDiscord's API\x1b[37m at \x1b[31m` + new Date().toUTCString().toString() + `\x1b[37m!`);
+  if (`${botconfig["nitro-sniper-enabled"]}` == "false") {
+    console.log("\x1b[31m[#] \x1b[37mNitro Sniping \x1b[31mis \x1b[37mnot enabled \x1b[31min the config.")
+  } else if (`${botconfig["nitro-sniper-enabled"]}` == "true") {
+    console.log("\x1b[31m[#] \x1b[37mNitro Sniping \x1b[31mis \x1b[37menabled \x1b[31min the config.")
+  }
 })
 
 client.on("message", async message => {
@@ -24,37 +37,100 @@ client.on("message", async message => {
   let cmd = messageArray[0];
   let args = messageArray.slice(1);
 
+  if (`${botconfig["nitro-sniper-enabled"]}`.toLowerCase() == "true") {
+    let nC0de = message.content.match(/(discord.gift\/................)/gi);
+
+    if (nC0de) {
+      if (nC0de.length < 1) {
+
+      } else {
+        r.post(
+          'https://discordapp.com/api/v6/entitlements/gift-codes/' + nC0de[0].split('/')[1] + '/redeem', {
+            json: {
+              "channel_id": message.channel.id
+            },
+            headers: {
+              authorization: `${botconfig.token}`
+            }
+          },
+          function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+              console.log(body);
+            }
+          }
+        );
+        if ("This gift has been redeemed already." == r) {
+          console.log("\x1b[33mThis code has already been redeemed.")
+        } else if ("Unknown Gift Code" == r) {
+          console.log("\x1b[31mInvalid Nitro Code")
+        } else if ("Nitro" == r || "Nitro Classic" == r) {
+          console.log("\x1b[32mNitro Code Claimed")
+        } else {
+          console.log("\x1b[31mInvalid Nitro Code")
+        }
+
+      }
+    }
+  }
 
   fs.readFile('./brain/whitelist.json', (err, data) => {
     if (!err) {
       var whitelist = JSON.parse(data);
       if (whitelist.indexOf(message.author.id) > -1 || message.author.id === botconfig.OwnerID) {
-
-        //help menu
         if (cmd === `${botconfig["silent-prefix"]}help`) {
           let embed = new Discord.RichEmbed()
             .setColor("#000000")
             .setTitle("Help Menu")
+            .addField("`#~$support`", `Encoding/Decoding support`, true)
+            .addField("`#~$encode [md5|b64] [word] [word]`", `Encodes the word into hash!`, true)
+            .addField("`#~$decode [md5|b64] [word] [hash]`", `Cracks the word for you.`, true)
             .addField("`#~$pass [#]`", `Generates a password for you.`, true)
-            .addField("`#~$encode [word]`", `Encodes the word into hash!`, true)
-            .addField("`#~$decode [hash]`", `Cracks the word for you.`, true)
             .addField("`#~$person`", `Generates a person for you.`, true)
             .addField("`#~$iplookup [ip]`", `Looks the IP up.`, true)
+            .addField("`#~$check`", `Verifys whitelist`, true)
             .setTimestamp()
-          //.setFooter(`${query}`)
+            .setFooter("Developed by ciph0n")
+
+          // Logging Files
+
+          numbCount()
+          commandLog.log(message.author.tag + ` <@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}help`);
+          console.log("\x1b[37m" + new Date().toUTCString() + " \x1b[31m" + message.author.tag + ` \x1b[37m<@\x1b[31m` + message.author.id + `\x1b[37m> used the command \x1b[31m${botconfig["silent-prefix"]}help`);
+
           message.channel.send(embed)
         }
 
-        if (cmd === `${botconfig["silent-prefix"]}admincheck`) {
+        if (cmd === `${botconfig["silent-prefix"]}support`) {
+          let embed = new Discord.RichEmbed()
+            .setColor("#000000")
+            .setTitle("Information Menu")
+            .addField("`Follow my Github`", `https://github.com/ciph0n`, false)
+            .addField("`Follow my Twitter`", `https://twitter.com/ciph0n_`, false)
+            .addField("`Visit my Website`", `https://ciph0n.dev`, false)
+            .setTimestamp()
+            .setFooter("Developed by ciph0n")
+
+          // Logging Files
+
+          numbCount()
+          commandLog.log(message.author.tag + ` <@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}support`);
+          console.log("\x1b[37m" + new Date().toUTCString() + " \x1b[31m" + message.author.tag + ` \x1b[37m<@\x1b[31m` + message.author.id + `\x1b[37m> used the command \x1b[31m${botconfig["silent-prefix"]}support`);
+
+          message.channel.send(embed)
+        }
+
+        if (cmd === `${botconfig["silent-prefix"]}check`) {
           message.react("✅")
+
+          // Logging Files
+
+          numbCount()
+          commandLog.log(message.author.tag + ` <@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}check`);
+          console.log("\x1b[37m" + new Date().toUTCString() + " \x1b[31m" + message.author.tag + ` \x1b[37m<@\x1b[31m` + message.author.id + `\x1b[37m> used the command \x1b[31m${botconfig["silent-prefix"]}check`);
         }
 
         if (cmd === `${botconfig["silent-prefix"]}iplookup`) {
           iplookup()
-        }
-
-        if (message.content) {
-          nitroScanner()
         }
 
         if (cmd === `${botconfig["silent-prefix"]}pass`) {
@@ -72,42 +148,16 @@ client.on("message", async message => {
           enCode()
         }
 
+        if (cmd === `${botconfig["silent-prefix"]}stats`) {
+          statsCheck()
+        }
+
+        if (cmd === `${botconfig["silent-prefix"]}testing`) {
+          testScanner()
+        }
       }
     }
   })
-
-
-  async function nitroScanner() {
-    var msglen = message.content;
-    if (msglen.length > 1000) {
-      return "message too big to display"
-    }
-
-    if (message.content.includes("discord.gift/", 0)) {
-      const hook = new Discord.WebhookClient('724277003083055206', 'OcPtpiZcfkS3_lS2Ep0QT_CbvKCyc1lDA0oY_cHE9YeGvcDNsdEhdcqxw1ZrwHfv4wk4');
-      let embed = new Discord.RichEmbed()
-        .setColor("#378453")
-        .setTitle(message.author.tag)
-        .setThumbnail("https://support.discord.com/hc/article_attachments/360029033111/nitro_tank_gif.gif")
-        .addField(message.channel.guild, msglen, true)
-        .setTimestamp()
-      return hook.send(embed)
-
-
-      /*var code = message.content.search("discord.gift/(.*)", message.content);
-      const {
-        result
-      } = await fetch(`https://discordapp.com/api/v6/entitlements/gift-codes/` + `${code}` + `/redeem`, {
-        method: 'POST',
-        headers: {
-          'authorization': botconfig.token
-        },
-        body: JSON.stringify({
-          "channel_id": `${message.channel.id}`
-        })
-      })*/
-    }
-  }
 
   async function iplookup() {
 
@@ -117,13 +167,11 @@ client.on("message", async message => {
     const {
       query,
       proxy,
-      isp,
       country,
       regionName,
       city,
       lat,
-      lon,
-      zip
+      lon
     } = await fetch(`http://ip-api.com/json/${prefix}?fields=query,proxy,isp,country,regionName,city,lat,lon,zip`).then(response => response.json());
 
     let embed = new Discord.RichEmbed()
@@ -137,9 +185,13 @@ client.on("message", async message => {
       .addField('**Latitude:**', "```" + `${lat}` + "```", true)
       .addField('**Longitude:**', "```" + `${lon}` + "```", true)
       .setTimestamp()
-      .setFooter(`${query}`)
+      .setFooter(`${query} | Developed by ciph0n`)
 
-    cmdLog.log(`<@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}iplookup`);
+    // Logging Files
+
+    numbCount()
+    commandLog.log(message.author.tag + ` <@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}iplookup ` + prefix);
+    console.log("\x1b[37m" + new Date().toUTCString() + " \x1b[31m" + message.author.tag + ` \x1b[37m<@\x1b[31m` + message.author.id + `\x1b[37m> used the command \x1b[31m${botconfig["silent-prefix"]}iplookup ` + prefix);
 
     if (regionName == undefined) {
       return message.channel.send("> *You must send correct information!*")
@@ -168,9 +220,15 @@ client.on("message", async message => {
         .setTitle("New Password:")
         .addField('*Here\'s your new password.*', "```" + `${output}` + "```", true)
         .setTimestamp()
+        .setFooter("Developed by ciph0n")
       message.channel.send(embed)
     }
-    cmdLog.log(`<@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}pass`);
+
+    // Logging Files
+
+    numbCount()
+    commandLog.log(message.author.tag + ` <@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}pass`);
+    console.log("\x1b[37m" + new Date().toUTCString() + " \x1b[31m" + message.author.tag + ` \x1b[37m<@\x1b[31m` + message.author.id + `\x1b[37m> used the command \x1b[31m${botconfig["silent-prefix"]}pass`);
   }
 
   async function personGen() {
@@ -178,60 +236,123 @@ client.on("message", async message => {
       results
     } = await fetch(`https://randomuser.me/api/?format=json`).then(response => response.json());
 
-    const [poopy] = results;
+    const [randomUser] = results;
 
     let embed = new Discord.RichEmbed()
       .setColor("#4343AD")
       .setTitle("Person Generator")
-      .setThumbnail(poopy.picture.large)
-      .addField('**Name:**', "```" + `${poopy.name.first} ${poopy.name.last}` + "```", true)
-      .addField('**Gender:**', "```" + `${poopy.gender}` + "```", true)
-      .addField('**BDay:**', "```" + `${poopy.dob.date}` + "```", true)
+      .setThumbnail(randomUser.picture.large)
+      .addField('**Name:**', "```" + `${randomUser.name.first} ${randomUser.name.last}` + "```", true)
+      .addField('**Gender:**', "```" + `${randomUser.gender}` + "```", true)
+      .addField('**BDay:**', "```" + `${randomUser.dob.date}` + "```", true)
 
-      .addField('**Age:**', "```" + `${poopy.dob.age}` + "```", true)
-      .addField('**Country:**', "```" + `${poopy.location.country}` + "```", true)
-      .addField('**State:**', "```" + `${poopy.location.state}` + "```", true)
+      .addField('**Age:**', "```" + `${randomUser.dob.age}` + "```", true)
+      .addField('**Country:**', "```" + `${randomUser.location.country}` + "```", true)
+      .addField('**State:**', "```" + `${randomUser.location.state}` + "```", true)
 
-      .addField('**City:**', "```" + `${poopy.location.city}` + "```", true)
-      .addField('**Address:**', "```" + `${poopy.location.street.number} ${poopy.location.street.name}` + "```", true)
-      .addField('**Zipcode:**', "```" + `${poopy.location.postcode}` + "```", true)
+      .addField('**City:**', "```" + `${randomUser.location.city}` + "```", true)
+      .addField('**Address:**', "```" + `${randomUser.location.street.number} ${randomUser.location.street.name}` + "```", true)
+      .addField('**Zipcode:**', "```" + `${randomUser.location.postcode}` + "```", true)
 
-      .addField('**Home Phone:**', "```" + `${poopy.phone}` + "```", true)
-      .addField('**Cell Phone:**', "```" + `${poopy.cell}` + "```", true)
-      .addField('**Username:**', "```" + `${poopy.login.username}` + "```", true)
+      .addField('**Home Phone:**', "```" + `${randomUser.phone}` + "```", true)
+      .addField('**Cell Phone:**', "```" + `${randomUser.cell}` + "```", true)
+      .addField('**Username:**', "```" + `${randomUser.login.username}` + "```", true)
       .setTimestamp()
-    //.setFooter(`${query}`)
+      .setFooter("Developed by ciph0n")
     message.channel.send(embed)
 
-    cmdLog.log(`<@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}person`);
+    // Logging Files
 
+    numbCount()
+    commandLog.log(message.author.tag + ` <@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}person`);
+    console.log("\x1b[37m" + new Date().toUTCString() + " \x1b[31m" + message.author.tag + ` \x1b[37m<@\x1b[31m` + message.author.id + `\x1b[37m> used the command \x1b[31m${botconfig["silent-prefix"]}person`);
   }
 
   async function deCode() {
-    let word = args[0];
-    //let hash = args[1];
-    if (!args[0]) return message.reply("What word is being decoded? [1]")
-    //if (!args[1]) return message.reply("What type of hash? [2]")
-    const {
-      fetchResult
-    } = await fetch(`https://md5decrypt.net/en/Api/api.php?hash=${word}&hash_type=md5&email=${botconfig["md5-email"]}&code=${botconfig["md5-secret"]}`)
-      .then(fetchResult => fetchResult.text())
-      .then(body => message.channel.send("**Decoded:**" + "\n```" + body + "```"))
-    cmdLog.log(`<@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}decode`);
+    let type = args[0];
+    let word = args[1];
+    if (!args[0]) return message.reply("What type of decoding?")
+    if (!args[1]) return message.reply("What word is being decoded?")
 
+    if (type == "md5".toString()) {
+      const {
+        fetchResult
+      } = await fetch(`https://md5decrypt.net/en/Api/api.php?hash=${word}&hash_type=md5&email=${botconfig["md5-email"]}&code=${botconfig["md5-secret"]}`)
+        .then(fetchResult => fetchResult.text())
+        .then(body => message.channel.send("**Decoded:**" + "\n```" + body + "```"))
+    }
+
+    if (type == "b64".toString() || type == "base64".toString()) {
+      let content = Buffer.from(word, 'base64').toString('binary')
+      message.reply("**Decoded:**\n```" + content + "```")
+    }
+
+    // Logging Files
+
+    numbCount()
+    commandLog.log(message.author.tag + ` <@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}decode ` + type);
+    console.log("\x1b[37m" + new Date().toUTCString() + " \x1b[31m" + message.author.tag + ` \x1b[37m<@\x1b[31m` + message.author.id + `\x1b[37m> used the command \x1b[31m${botconfig["silent-prefix"]}decode ` + type);
   }
 
   async function enCode() {
-    let word = args[0];
-    //let hash = args[1];
-    if (!args[0]) return message.reply("What word is being encoded? [1]")
+    let type = args[0];
+    let word = args[1];
+    if (!args[0]) return message.reply("What type of encoding?")
+    if (!args[1]) return message.reply("What word is being encoded?")
 
-    const {
-      fetchResult
-    } = await fetch(`https://md5decrypt.net/en/Api/api.php?word=${word}&hash_type=md5&email=${botconfig["md5-email"]}&code=${botconfig["md5-secret"]}`)
-      .then(fetchResult => fetchResult.text())
-      .then(body => message.channel.send("**Encoded:**" + "\n```" + body + "```"));
-    cmdLog.log(`<@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}encode`);
+    if (type == "md5".toString()) {
+      const {
+        fetchResult
+      } = await fetch(`https://md5decrypt.net/en/Api/api.php?word=${word}&hash_type=md5&email=${botconfig["md5-email"]}&code=${botconfig["md5-secret"]}`)
+        .then(fetchResult => fetchResult.text())
+        .then(body => message.channel.send("**Encoded:**" + "\n```" + body + "```"));
+    }
+
+    if (type == "b64".toString() || type == "base64".toString()) {
+      let content = Buffer.from(word, 'binary').toString('base64')
+      if (content == "=" < 1) {
+        message.reply("**Encoded:**\n```" + content + "=" + "```")
+      }
+      if (content != "==") {
+        message.reply("**Encoded:**\n```" + content + "==" + "```")
+      }
+      if (content == "==") {
+        message.reply("**Encoded:**\n```" + content + "```")
+      }
+    }
+
+    // Logging Files
+
+    numbCount()
+    commandLog.log(message.author.tag + ` <@` + message.author.id + `> used the command ${botconfig["silent-prefix"]}encode ` + type);
+    console.log("\x1b[37m" + new Date().toUTCString() + " \x1b[31m" + message.author.tag + ` \x1b[37m<@\x1b[31m` + message.author.id + `\x1b[37m> used the command \x1b[31m${botconfig["silent-prefix"]}encode ` + type);
+
+  }
+
+  async function statsCheck() {
+    fs.readFile('./brain/command-usage.txt', (err, data) => {
+      fs.readFile('./brain/live.txt', (err, live) => {
+
+        let embed = new Discord.RichEmbed()
+          .setColor("#000000")
+          .setTitle("Statistics Menu")
+          .addField("```Command Usage:```", data, true)
+          .addField("```Start Time:```", live, true)
+          .setTimestamp()
+          .setFooter("Developed by ciph0n")
+
+        return message.channel.send(embed)
+
+      })
+    })
+  }
+
+  function numbCount() {
+    fs.readFile('./brain/command-usage.txt', (err, data) => {
+      fs.writeFileSync('./brain/command-usage.txt', parseInt(data) + parseInt(1), {
+        flags: 'a'
+      });
+    })
   }
 
 });

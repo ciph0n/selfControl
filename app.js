@@ -81,13 +81,13 @@ client.on("message", async message => {
           let embed = new Discord.RichEmbed()
             .setColor("#000000")
             .setTitle("Help Menu")
-            .addField("`#~$support`", `Encoding/Decoding support`, true)
-            .addField("`#~$encode [md5|b64] [word] [word]`", `Encodes the word into hash!`, true)
-            .addField("`#~$decode [md5|b64] [word] [hash]`", `Cracks the word for you.`, true)
-            .addField("`#~$pass [#]`", `Generates a password for you.`, true)
-            .addField("`#~$person`", `Generates a person for you.`, true)
-            .addField("`#~$iplookup [ip]`", `Looks the IP up.`, true)
-            .addField("`#~$check`", `Verifys whitelist`, true)
+            .addField("`" + `${botconfig["silent-prefix"]}` + "support`", `Encoding/Decoding support`, true)
+            .addField("`" + `${botconfig["silent-prefix"]}` + "encode [md5|b64] [word] [word]`", `Encodes the word into hash!`, true)
+            .addField("`" + `${botconfig["silent-prefix"]}` + "decode [md5|b64] [word] [hash]`", `Cracks the word for you.`, true)
+            .addField("`" + `${botconfig["silent-prefix"]}` + "pass [#]`", `Generates a password for you.`, true)
+            .addField("`" + `${botconfig["silent-prefix"]}` + "person`", `Generates a person for you.`, true)
+            .addField("`" + `${botconfig["silent-prefix"]}` + "iplookup [ip]`", `Looks the IP up.`, true)
+            .addField("`" + `${botconfig["silent-prefix"]}` + "check`", `Verifys whitelist`, true)
             .setTimestamp()
             .setFooter("Developed by ciph0n")
 
@@ -144,16 +144,13 @@ client.on("message", async message => {
         if (cmd === `${botconfig["silent-prefix"]}decode`) {
           deCode()
         }
+
         if (cmd === `${botconfig["silent-prefix"]}encode`) {
           enCode()
         }
 
         if (cmd === `${botconfig["silent-prefix"]}stats`) {
           statsCheck()
-        }
-
-        if (cmd === `${botconfig["silent-prefix"]}testing`) {
-          testScanner()
         }
       }
     }

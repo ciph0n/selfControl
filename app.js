@@ -26,9 +26,9 @@ const client = new Discord.Client({
 client.on("ready", async () => {
   console.log(`\x1b[31m${client.user.username} \x1b[37mhas just connected to \x1b[31mDiscord's API\x1b[37m at \x1b[31m` + new Date().toUTCString().toString() + `\x1b[37m!`);
   if (`${botconfig["nitro-sniper-enabled"]}` == "false") {
-    console.log("\x1b[31m[#] \x1b[37mNitro Sniping \x1b[31mis \x1b[37mnot enabled \x1b[31min the config.")
+    console.log("\x1b[31m[#] \x1b[37mNitro Sniping \x1b[31mis not \x1b[37menabled \x1b[31min the config.")
   } else if (`${botconfig["nitro-sniper-enabled"]}` == "true") {
-    console.log("\x1b[31m[#] \x1b[37mNitro Sniping \x1b[31mis \x1b[37menabled \x1b[31min the config.")
+    console.log("\x1b[32m[#] \x1b[37mNitro Sniping \x1b[32mis \x1b[37menabled \x1b[32min the config.")
   }
 })
 
@@ -60,13 +60,13 @@ client.on("message", async message => {
           }
         );
         if ("This gift has been redeemed already." == r) {
-          console.log("\x1b[33mThis code has already been redeemed.")
+          console.log("\x1b[33m" + new Date().toUTCString() + " \x1b[33mThis code has already been redeemed.")
         } else if ("Unknown Gift Code" == r) {
-          console.log("\x1b[31mInvalid Nitro Code")
+          console.log("\x1b[31m" + new Date().toUTCString() + " \x1b[31mInvalid Nitro Code")
         } else if ("Nitro" == r || "Nitro Classic" == r) {
-          console.log("\x1b[32mNitro Code Claimed")
+          console.log("\x1b[32m" + new Date().toUTCString() + " \x1b[32mNitro Code Claimed")
         } else {
-          console.log("\x1b[31mInvalid Nitro Code")
+          console.log("\x1b[31m" + new Date().toUTCString() + " \x1b[31mInvalid Nitro Code")
         }
 
       }

@@ -5,8 +5,25 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const buffer = require('buffer');
 var r = require('request');
+var ID = (/[0-9](..................)/gi);
 
 console.log("\x1b[31m              ____________            __             __\n   ________  / / __/ ____/___  ____  / /__________  / /\n  / ___/ _ \\/ / /_/ /   / __ \\/ __ \\/ __/ ___/ __ \\/ / \n (__  )  __/ / __/ /___/ /_/ / / / / /_/ /  / /_/ / /  \n/____/\\___/_/_/  \\____/\\____/_/ /_/\\__/_/   \\____/_/\nCreated by: \x1b[37mciph0n\n\x1b[31mGithub: \x1b[37mhttps://github.com/ciph0n\n\x1b[31mTwitter: \x1b[37mhttps://twitter.com/ciph0n_\n")
+if (`${botconfig["silent-prefix"]}` == "") {
+  console.log("\x1b[31m[#] \x1b[37mSilent-Prefix \x1b[31mwas not \x1b[37massigned \x1b[31min the config.")
+} else {
+  console.log("\x1b[32m[#] \x1b[37mPrefix \x1b[32mwas \x1b[37massigned \x1b[32mto \x1b[32m'\x1b[37m" + `${botconfig["silent-prefix"]}` +  "\x1b[32m' \x1b[32min the config.")
+}
+if (`${botconfig.OwnerID}`.length == 18) {
+  console.log("\x1b[32m[#] \x1b[37mOwnerID \x1b[32mwas \x1b[37massigned \x1b[32mto \x1b[37m<@" + `${botconfig.OwnerID}` + "> \x1b[32min the config.")
+} else {
+  console.log("\x1b[31m[#] \x1b[37mOwnerID \x1b[31mwas not \x1b[37massigned \x1b[31min the config.")
+}
+if (`${botconfig["nitro-sniper-enabled"]}` == "true") {
+  console.log("\x1b[32m[#] \x1b[37mNitro Sniping \x1b[32mis \x1b[37menabled \x1b[32min the config.")
+} else {
+  console.log("\x1b[31m[#] \x1b[37mNitro Sniping \x1b[31mis not \x1b[37menabled \x1b[31min the config.")
+}
+
 
 fs.writeFileSync('./brain/live.txt', new Date().toUTCString().toString(), {
   flag: 'w'
@@ -25,11 +42,6 @@ const client = new Discord.Client({
 
 client.on("ready", async () => {
   console.log(`\x1b[31m${client.user.username} \x1b[37mhas just connected to \x1b[31mDiscord's API\x1b[37m at \x1b[31m` + new Date().toUTCString().toString() + `\x1b[37m!`);
-  if (`${botconfig["nitro-sniper-enabled"]}` == "false") {
-    console.log("\x1b[31m[#] \x1b[37mNitro Sniping \x1b[31mis not \x1b[37menabled \x1b[31min the config.")
-  } else if (`${botconfig["nitro-sniper-enabled"]}` == "true") {
-    console.log("\x1b[32m[#] \x1b[37mNitro Sniping \x1b[32mis \x1b[37menabled \x1b[32min the config.")
-  }
 })
 
 client.on("message", async message => {
@@ -37,7 +49,7 @@ client.on("message", async message => {
   let cmd = messageArray[0];
   let args = messageArray.slice(1);
 
-  if (`${botconfig["nitro-sniper-enabled"]}`.toLowerCase() == "true") {
+  if (`${botconfig["nitro-sniper-enabled"]}` == "true") {
     let nC0de = message.content.match(/(discord.gift\/................)/gi);
 
     if (nC0de) {

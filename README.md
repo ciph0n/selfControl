@@ -18,7 +18,6 @@ Starting the application can be done by either running the batch file or:
 ```sh
 $ node install.js
 ```
-Or simply run the batch file.
 
 ### Development
 

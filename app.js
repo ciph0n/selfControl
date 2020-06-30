@@ -19,7 +19,7 @@ if (`${botconfig.OwnerID}`.length == 18) {
 } else {
   console.log("\x1b[31m[#] \x1b[37mOwnerID \x1b[31mwas not \x1b[37massigned \x1b[31min the config.")
 }
-if (`${botconfig["nitro-sniper-enabled"]}`.toLowerCase() == "true".toLowerCase()) {
+if (`${botconfig["nitro-sniper-enabled"]}` == "true") {
   console.log("\x1b[32m[#] \x1b[37mNitro Sniping \x1b[32mis \x1b[37menabled \x1b[32min the config.")
 } else {
   console.log("\x1b[31m[#] \x1b[37mNitro Sniping \x1b[31mis not \x1b[37menabled \x1b[31min the config.")

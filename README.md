@@ -1,6 +1,6 @@
 # selfControl
 
-selfControl is a Discord Self Bot and a Custom Nitro Sniper.
+selfControl is a very effecient Discord Bot.
 
   - Simple to use 
   - Quick Sniping
@@ -25,9 +25,8 @@ Want to request a suggestion for selfControl?
 Send an email including your suggestion to **admin@ciph0n.dev** !
 
 Contributions are always accepted! If you're feeling even more generous:
-BTC Address: *insert btc address*
+BTC Address: *33tMv4R9SyNnytfMWLdurVsgKL5VNxxVnC*
 
-### Todos
+### Notice
 
- - Implement Server/User Stalk
- - New Themes?
+By using selfControl, you're fully aware the Discord self bots are against the [Terms of Service](https://support.discord.com/hc/en-us/articles/115002192352-Automated-user-accounts-self-bots). I'm not responsible for your use of this bot.

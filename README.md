@@ -10,11 +10,7 @@ selfControl is a very effecient Discord Bot.
 
 selfControl requires [Node.js](https://nodejs.org/) in order to function.
 
-Installation can be done by running the batch file or:
-```sh
-$ node install.js
-```
-Starting the application can be done by either running the batch file or:
+Installation can be done by running the installation file:
 ```sh
 $ node install.js
 ```
